@@ -6,10 +6,14 @@ class Settings(BaseSettings):
 
     environment: str = "development"
 
-    # Postgres (async URL, e.g. postgresql+asyncpg://user:pass@localhost:5432/charity_connect)
-    database_url: str = (
-        "postgresql+asyncpg://postgres:postgres@localhost:5432/charity_connect"
-    )
+    database_url: str = ""
+
+    @property
+    def effective_database_url(self) -> str:
+        url = self.database_url.strip() if self.database_url else ""
+        if url and not url.startswith("postgresql+asyncpg://postgres:postgres@localhost"):
+            return url
+        return "sqlite+aiosqlite:///./charity_connect.db"
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

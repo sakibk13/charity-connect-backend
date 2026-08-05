@@ -52,7 +52,11 @@ def upload_static_files_to_minio():
 
 
 async def seed_data():
-    engine = create_async_engine(settings.database_url, echo=False)
+    engine = create_async_engine(settings.effective_database_url, echo=False)
+    async with engine.begin() as conn:
+        from app.db.base import Base
+        await conn.run_sync(Base.metadata.create_all)
+
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     async with async_session() as db:
