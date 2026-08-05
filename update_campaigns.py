@@ -131,6 +131,13 @@ async def update_db(db_url: str):
             ]
             for cdata in campaigns_data:
                 db.add(Campaign(**cdata))
+
+            # Delete any legacy/unwanted campaigns like medicine-campaign / medi-help / flood-relief
+            await db.execute(
+                delete(Campaign).where(
+                    Campaign.slug.in_(["medicine-campaign", "medi-help", "ramadan-campaign"])
+                )
+            )
             await db.commit()
             print(f"Successfully updated database {db_url}")
         await engine.dispose()
