@@ -28,7 +28,7 @@ app = FastAPI(title="Charity Connect API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,7 +37,12 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api/v1")
 
 import os
+from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 
-if os.path.exists("static"):
+static_dir = Path(__file__).resolve().parent.parent / "static"
+if static_dir.exists():
+    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+elif os.path.exists("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
+
