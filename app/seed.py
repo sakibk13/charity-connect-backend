@@ -122,46 +122,137 @@ async def seed_data():
         res = await db.execute(select(Campaign))
         existing_campaigns = res.scalars().all()
         campaign_map = {}
-        if not existing_campaigns:
-            campaigns_data = [
-                {
-                    "title": "Emergency Flood Relief Campaign",
-                    "slug": "flood-relief",
-                    "description": "Providing emergency food packs, clean drinking water, temporary shelter, and medical supplies to families devastated by severe flooding.",
-                    "category": "Emergency",
-                    "goal": 50000.00,
-                    "raised": 18500.00,
-                    "image_key": f"{base_url}/static/campaigns/flood-relief.jpeg",
-                    "active": True,
-                },
-                {
-                    "title": "Life-Saving Medicine & Medical Supplies",
-                    "slug": "medicine-campaign",
-                    "description": "Delivering essential medicines, surgical equipment, and mobile health clinics to remote and underserved communities.",
-                    "category": "Medical Aid",
-                    "goal": 35000.00,
-                    "raised": 12400.00,
-                    "image_key": f"{base_url}/static/campaigns/medicine-campaign.jpeg",
-                    "active": True,
-                },
-                {
-                    "title": "Ramadan Food Packs & Iftar Distribution",
-                    "slug": "ramadan-campaign",
-                    "description": "Distributing nutritious monthly food packs to impoverished families, widows, and orphans throughout the holy month.",
-                    "category": "Food Aid",
-                    "goal": 25000.00,
-                    "raised": 21000.00,
-                    "image_key": f"{base_url}/static/campaigns/ramadan-campaign.jpeg",
-                    "active": True,
-                },
-            ]
-            for cdata in campaigns_data:
+        
+        campaigns_data = [
+            {
+                "title": "Iftar for Little Hearts",
+                "slug": "iftar-for-little-hearts",
+                "description": "Provide nutritious Iftar meals and joy to vulnerable orphaned and underprivileged children throughout the holy month of Ramadan.",
+                "category": "Food Aid",
+                "goal": 15000.00,
+                "raised": 9800.00,
+                "image_key": f"{base_url}/static/campaigns/iftar-for-little-hearts.jpg",
+                "active": True,
+            },
+            {
+                "title": "Ramadan Food Pack for Families in Need",
+                "slug": "ramadan-food-pack",
+                "description": "Supply essential month-long food rations including rice, lentils, oil, and dates for impoverished families during Ramadan.",
+                "category": "Food Aid",
+                "goal": 25000.00,
+                "raised": 18400.00,
+                "image_key": f"{base_url}/static/campaigns/ramadan-food-pack.jpg",
+                "active": True,
+            },
+            {
+                "title": "Free Mobile Clinic",
+                "slug": "free-mobile-clinic",
+                "description": "Deploy fully-equipped mobile medical vans and doctors to deliver free diagnostic checkups, emergency care, and vital medicines in remote rural villages.",
+                "category": "Medical Aid",
+                "goal": 30000.00,
+                "raised": 14200.00,
+                "image_key": f"{base_url}/static/campaigns/free-mobile-clinic.jpg",
+                "active": True,
+            },
+            {
+                "title": "Building Hope",
+                "slug": "building-hope",
+                "description": "Construct resilient, flood-resistant shelters and homes for climate-displaced families who lost everything to natural disasters.",
+                "category": "Housing",
+                "goal": 50000.00,
+                "raised": 32600.00,
+                "image_key": f"{base_url}/static/campaigns/building-hope.jpg",
+                "active": True,
+            },
+            {
+                "title": "Food Relief",
+                "slug": "food-relief",
+                "description": "Immediate emergency food packet distribution to communities experiencing acute food shortages, natural disasters, and extreme hardship.",
+                "category": "Emergency Aid",
+                "goal": 20000.00,
+                "raised": 16500.00,
+                "image_key": f"{base_url}/static/campaigns/food-relief.jpg",
+                "active": True,
+            },
+            {
+                "title": "Hope and Hygiene",
+                "slug": "hope-and-hygiene",
+                "description": "Distribute essential hygiene kits, clean water purification tools, and sanitary supplies to protect vulnerable women and children.",
+                "category": "Health & Hygiene",
+                "goal": 12000.00,
+                "raised": 7900.00,
+                "image_key": f"{base_url}/static/campaigns/hope-and-hygiene.jpg",
+                "active": True,
+            },
+            {
+                "title": "Aqua Aid",
+                "slug": "aqua-aid",
+                "description": "Providing clean drinking water, deep tube wells, and solar filtration systems to remote communities in need.",
+                "category": "Water Aid",
+                "goal": 20000.00,
+                "raised": 14500.00,
+                "image_key": f"{base_url}/static/campaigns/aqua-aid.jpg",
+                "active": True,
+            },
+            {
+                "title": "Share Meals",
+                "slug": "share-meals",
+                "description": "Distributing hot nutritious meals and monthly food packs to hungry families, widows, and orphans.",
+                "category": "Food Aid",
+                "goal": 18000.00,
+                "raised": 13100.00,
+                "image_key": f"{base_url}/static/campaigns/share-meals.jpg",
+                "active": True,
+            },
+            {
+                "title": "Emergency Aid",
+                "slug": "emergency-aid",
+                "description": "Rapid disaster response providing immediate shelter, food packs, and emergency aid to flood & crisis victims.",
+                "category": "Emergency Relief",
+                "goal": 40000.00,
+                "raised": 27400.00,
+                "image_key": f"{base_url}/static/campaigns/emergency-aid.jpg",
+                "active": True,
+            },
+            {
+                "title": "Sustain Now",
+                "slug": "sustain-now",
+                "description": "Empowering families with sustainable income opportunities, livestock, and small business grants.",
+                "category": "Livelihood",
+                "goal": 25000.00,
+                "raised": 16800.00,
+                "image_key": f"{base_url}/static/campaigns/sustain-now.jpg",
+                "active": True,
+            },
+            {
+                "title": "Bright Futures",
+                "slug": "bright-futures",
+                "description": "Supporting underprivileged children with school supplies, scholarships, and safe learning environments.",
+                "category": "Education",
+                "goal": 15000.00,
+                "raised": 9200.00,
+                "image_key": f"{base_url}/static/campaigns/bright-futures.jpg",
+                "active": True,
+            },
+        ]
+        
+        existing_slugs = {c.slug for c in existing_campaigns}
+        for cdata in campaigns_data:
+            if cdata["slug"] not in existing_slugs:
                 c = Campaign(**cdata)
                 db.add(c)
                 await db.commit()
                 await db.refresh(c)
                 campaign_map[c.slug] = c
-            print(f"Seeded {len(campaigns_data)} Campaigns.")
+            else:
+                c_obj = next(c for c in existing_campaigns if c.slug == cdata["slug"])
+                campaign_map[c_obj.slug] = c_obj
+        
+        # Deactivate any legacy dummy campaigns like medicine-campaign or old flood-relief
+        for c in existing_campaigns:
+            if c.slug not in {cd["slug"] for cd in campaigns_data}:
+                c.active = False
+                await db.commit()
 
         # 4. Events
         res = await db.execute(select(Event))
