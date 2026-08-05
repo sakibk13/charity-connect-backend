@@ -248,11 +248,24 @@ async def seed_data():
                 c_obj = next(c for c in existing_campaigns if c.slug == cdata["slug"])
                 campaign_map[c_obj.slug] = c_obj
         
-        # Deactivate any legacy dummy campaigns like medicine-campaign or old flood-relief
+        # Hard-delete any legacy campaigns (medicine-campaign, medi-help, etc.) every startup
+        from sqlalchemy import delete as sa_delete, or_
+        await db.execute(
+            sa_delete(Campaign).where(
+                or_(
+                    Campaign.slug.in_(["medicine-campaign", "medi-help", "ramadan-campaign", "flood-relief-old"]),
+                    Campaign.title.ilike("%Medi Help%"),
+                    Campaign.title.ilike("%Medicine Campaign%"),
+                    Campaign.title.ilike("%Life-Saving Medicine%"),
+                )
+            )
+        )
+        # Deactivate any other unknown campaigns not in our approved list
+        approved_slugs = {cd["slug"] for cd in campaigns_data}
         for c in existing_campaigns:
-            if c.slug not in {cd["slug"] for cd in campaigns_data}:
+            if c.slug not in approved_slugs:
                 c.active = False
-                await db.commit()
+        await db.commit()
 
         # 4. Events
         res = await db.execute(select(Event))
