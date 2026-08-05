@@ -113,7 +113,7 @@ async def seed_data():
                     "headline": "Clean Water & Life-Saving Medical Care",
                     "badge_text": "Healthcare Initiative",
                     "cta_label": "Learn More",
-                    "cta_href": "/campaigns/medicine-campaign",
+                    "cta_href": "/campaigns/free-mobile-clinic",
                     "image_key": f"{base_url}/static/hero-slides/hero-image-3.jpeg",
                     "sort_order": 3,
                     "active": True,
