@@ -6,16 +6,21 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router
 from app.core.config import settings
+from app.core.storage import ensure_bucket_cors
 from seed import seed_data
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    ensure_bucket_cors()
+    try:
+        ensure_bucket_cors()
+    except Exception as exc:
+        print(f"Storage CORS info: {exc}")
+
     try:
         await seed_data()
     except Exception as exc:
-        print(f"Automatic seed warning: {exc}")
+        print(f"Automatic seed info: {exc}")
     yield
 
 
