@@ -1,7 +1,7 @@
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import delete
+from sqlalchemy import delete, or_
 from app.core.config import settings
 from app.models.campaign import Campaign
 
@@ -135,7 +135,11 @@ async def update_db(db_url: str):
             # Delete any legacy/unwanted campaigns like medicine-campaign / medi-help / flood-relief
             await db.execute(
                 delete(Campaign).where(
-                    Campaign.slug.in_(["medicine-campaign", "medi-help", "ramadan-campaign"])
+                    or_(
+                        Campaign.slug.in_(["medicine-campaign", "medi-help", "ramadan-campaign"]),
+                        Campaign.title.ilike("%Medi Help%"),
+                        Campaign.title.ilike("%Medicine%"),
+                    )
                 )
             )
             await db.commit()
