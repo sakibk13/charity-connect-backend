@@ -145,16 +145,6 @@ async def seed_data():
                 "active": True,
             },
             {
-                "title": "Free Mobile Clinic",
-                "slug": "free-mobile-clinic",
-                "description": "Deploy fully-equipped mobile medical vans and doctors to deliver free diagnostic checkups, emergency care, and vital medicines in remote rural villages.",
-                "category": "Medical Aid",
-                "goal": 30000.00,
-                "raised": 14200.00,
-                "image_key": f"{base_url}/static/campaigns/free-mobile-clinic.jpg",
-                "active": True,
-            },
-            {
                 "title": "Building Hope",
                 "slug": "building-hope",
                 "description": "Construct resilient, flood-resistant shelters and homes for climate-displaced families who lost everything to natural disasters.",
