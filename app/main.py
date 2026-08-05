@@ -35,3 +35,9 @@ app.add_middleware(
 )
 
 app.include_router(api_router, prefix="/api/v1")
+
+import os
+from fastapi.staticfiles import StaticFiles
+
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")

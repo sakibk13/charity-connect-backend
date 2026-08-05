@@ -83,6 +83,8 @@ async def seed_data():
             print(f"Admin User {admin_email} already exists.")
 
         base_url = settings.r2_public_base_url.rstrip("/")
+        if "localhost" in base_url or not base_url:
+            base_url = ""
 
         # 2. Hero Slides
         res = await db.execute(select(HeroSlide))
