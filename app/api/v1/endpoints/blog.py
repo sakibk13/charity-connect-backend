@@ -1,5 +1,5 @@
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -68,7 +68,7 @@ async def create_post(
         image_key=payload.image_key,
         published=payload.published,
         author_id=admin.id,
-        published_at=datetime.now(UTC) if payload.published else None,
+        published_at=datetime.now(timezone.utc) if payload.published else None,
     )
     db.add(post)
     await db.commit()
@@ -96,7 +96,7 @@ async def update_post(
         setattr(post, field, value)
 
     if post.published and not was_published:
-        post.published_at = datetime.now(UTC)
+        post.published_at = datetime.now(timezone.utc)
     elif not post.published:
         post.published_at = None
 
